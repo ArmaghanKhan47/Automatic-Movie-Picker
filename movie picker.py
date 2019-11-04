@@ -1,8 +1,14 @@
+#   Features:
+#   1.Already suggested movie will not suggest again
+#   2.Only run mp4 or mkv file
+#   3.Can run movie automatically
 import os, random, time
 
 movies_path = os.getcwd() #path of folder where all movies are stored
 check = True
 choice = False
+selected_index = []
+error_msg = "Sorry unable to find any other movie"
 
 #function to select movie
 def movieSelector(path):
@@ -10,8 +16,27 @@ def movieSelector(path):
     movies_list = os.listdir()
     number_of_movies = len(movies_list)
     
-    selected_movie = random.randrange(0, number_of_movies)
-    return movies_list[selected_movie]
+    if (number_of_movies == len(selected_index)):
+        return error_msg
+    
+    while True:
+        selected_movie = random.randrange(0, number_of_movies)
+        if (selected_movie in selected_index):
+            continue
+        else:
+            break
+    
+    name = movies_list[selected_movie]
+    if (not (checkType(name))):
+        #it is file
+        if (not (checkExt(name))):
+            #recursion
+            name = movieSelector(path)
+    
+    if (not (selected_movie in selected_index)):
+        selected_index.append(selected_movie)
+    
+    return name
 
 #function to check that selected name is a file or directory
 def checkType(selected_name):
@@ -21,25 +46,37 @@ def checkType(selected_name):
         result = False
     return result
 
+#function to check extension
+def checkExt(selected_name):
+    fileextension = os.path.splitext(selected_name)[1]
+    if (fileextension == ".mp4" or fileextension == ".mkv"):
+        result = True
+    else:
+        result = False
+    
+    return result
+    
+    
 #function to start the movie
 def startMovie(selected_name):
-    file_type = checkType(selected_name)
-    
-    if (file_type):
-        os.chdir(selected_name)
-        files = os.listdir()
-        subfiles = len(files)
-        for x in range(0, subfiles):
-            fileextension = os.path.splitext(files[x])[1]
-            if (fileextension == ".mp4" or fileextension == ".mkv"):
-                os.system(".\\" + "\"" + files[x] + "\"")
-                os.system("exit")
-                break
+    if (selected_name != error_msg):
+        if (checkType(selected_name)):
+            os.chdir(selected_name)
+            files = os.listdir()
+            subfiles = len(files)
+            for x in range(0, subfiles):
+                if (checkExt(files[x])):
+                    print("Playing " + files[x])
+                    os.system(".\\" + "\"" + files[x] + "\"")
+                    break
+        else:
+            if (checkExt(selected_name)):
+                print("Playing " + selected_name)
+                os.system(".\\" + "\"" + selected_name + "\"")
     else:
-        fileextension = os.path.splitext(selected_name)[1]
-        if (fileextension == ".mp4" or fileextension == ".mkv"):
-            os.system(".\\" + "\"" + selected_name + "\"")
+        print(error_msg)
 
+#Actual execution start here
 print("Hi! I am here to help you in picking up the movie")
 input("Press any key so that I can start helping right now")
 
