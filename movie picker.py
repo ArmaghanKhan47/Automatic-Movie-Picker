@@ -1,13 +1,44 @@
-#   Features:
-#   1.Already suggested movie will not suggest again
-#   2.Only run mp4 or mkv file
-#   3.Can run movie automatically
+"""
+Note:
+    Features:
+        1.Already suggested movie will not suggest again.
+        2.Only run mp4 or mkv file.
+        3.Can run movie automatically.
+        4.Create playlist if multiple videos found in sub-directory.
+    
+    Dependency:
+        VLC Player must be installed in the computer and its vlc command-line tool must be working.
+        
+    Limitation:
+        Only workes on Microsoft Windows.
+        
+    How To Set vlc command line tool:
+        for vlc to work you have to create enviromental variable.
+        
+        VLC mostly installed in following path:
+            C:\Program Files (x86)\VideoLAN\VLC
+            
+        Step 1:
+            Right Click on 'This PC' icon -> Click on 'Propertise'.
+        Step 2:
+            Click on 'Advanced system setting' from left panel.
+        Step 3:
+            Click on 'Enviromental Variables' in 'Advanced' tab.
+        Step 4:
+            Double Click on 'Path' in 'User Variables for'.
+        Step 5:
+            Click on 'New' and copy paste the above path(line 19)
+        Step 6:
+            Click on 'OK' and now vlc command-line tool is set
+        
+"""
 import os, random, time
 
 movies_path = os.getcwd() #path of folder where all movies are stored
 check = True
 choice = False
 selected_index = []
+multiple_videos = []
 error_msg = "Sorry unable to find any other movie"
 
 #function to select movie
@@ -66,13 +97,13 @@ def startMovie(selected_name):
             subfiles = len(files)
             for x in range(0, subfiles):
                 if (checkExt(files[x])):
-                    print("Playing " + files[x])
-                    os.system(".\\" + "\"" + files[x] + "\"")
-                    break
+                    multiple_videos.append("\"" + files[x] + "\"")
+            word = "vlc " + " ".join(multiple_videos)
+            os.system(word)
         else:
             if (checkExt(selected_name)):
                 print("Playing " + selected_name)
-                os.system(".\\" + "\"" + selected_name + "\"")
+                os.system("vlc " + "\"" + selected_name + "\"")
     else:
         print(error_msg)
 
