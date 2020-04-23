@@ -122,15 +122,17 @@ input("Press any key so that I can start helping right now")
 while check:
     print("Getting Movies Name")
     print("Selecting the Movie")
+    name = movieSelector(movies_path)
     print("Movie Selected")
     print("***")
-    name = movieSelector(movies_path)
     print(name)
     print("***")
+    if name == error_msg:
+        break
     print("Enjoy your time. I\'m pleased to help you")
     
     ans = input("Do you want me to start the movie press Y/y: ")
-    if (ans == 'Y' or ans == 'y'):
+    if ans == 'Y' or ans == 'y':
         startMovie(name)
         
     letter = input("To Shutdown Press n/N or To run again press any key: ")
